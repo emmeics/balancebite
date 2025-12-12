@@ -1,0 +1,86 @@
+# =============================================================================
+# DOCKER COMPOSE - BalanceBite (SVILUPPO)
+# =============================================================================
+# Solo servizi di supporto: PostgreSQL e Redis
+# Il web server è gestito da Symfony CLI: symfony serve
+#
+# Comandi:
+#   docker compose up -d        # Avvia PostgreSQL e Redis
+#   symfony serve               # Avvia web server Symfony (nella cartella backend)
+#
+# =============================================================================
+
+services:
+
+  # ===========================================================================
+  # POSTGRESQL (Database)
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: balancebite-postgres
+    restart: unless-stopped
+    
+    # Porta esposta per connessione da host locale
+    # Symfony CLI si connette a localhost:5432
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    
+    environment:
+      POSTGRES_USER: ${DB_USER:-balancebite}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-balancebite}
+      POSTGRES_DB: ${DB_NAME:-balancebite}
+    
+    volumes:
+      # Persistenza dati
+      - postgres_data:/var/lib/postgresql/data
+      # Script inizializzazione (solo primo avvio)
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-balancebite}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - balancebite-network
+
+  # ===========================================================================
+  # REDIS (Cache)
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: balancebite-redis
+    restart: unless-stopped
+    
+    # Porta esposta per connessione da host locale
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    
+    command: redis-server --appendonly yes
+    
+    volumes:
+      - redis_data:/data
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - balancebite-network
+
+# -----------------------------------------------------------------------------
+# NETWORKS
+# -----------------------------------------------------------------------------
+networks:
+  balancebite-network:
+    driver: bridge
+
+# -----------------------------------------------------------------------------
+# VOLUMES
+# -----------------------------------------------------------------------------
+volumes:
+  postgres_data:
+  redis_data:

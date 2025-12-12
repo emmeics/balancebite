@@ -1,0 +1,133 @@
+# =============================================================================
+# DOCKER COMPOSE - BalanceBite (PRODUZIONE)
+# =============================================================================
+# Setup completo con Nginx + PHP-FPM + PostgreSQL + Redis
+# Tutti i servizi containerizzati.
+#
+# Comando:
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# =============================================================================
+
+services:
+
+  # ===========================================================================
+  # PHP-FPM (Application Server)
+  # ===========================================================================
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: balancebite-php
+    restart: unless-stopped
+    
+    volumes:
+      - ./backend:/var/www/html
+    
+    environment:
+      APP_ENV: ${APP_ENV:-prod}
+      APP_DEBUG: ${APP_DEBUG:-0}
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?serverVersion=16
+      REDIS_URL: redis://redis:6379
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    
+    networks:
+      - balancebite-network
+
+  # ===========================================================================
+  # NGINX (Web Server)
+  # ===========================================================================
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: balancebite-nginx
+    restart: unless-stopped
+    
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    
+    volumes:
+      - ./backend:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    
+    depends_on:
+      - php
+    
+    networks:
+      - balancebite-network
+
+  # ===========================================================================
+  # POSTGRESQL (Database)
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: balancebite-postgres
+    restart: unless-stopped
+    
+    # In produzione NON esporre la porta all'esterno!
+    # Solo i container sulla stessa rete possono accedere
+    # ports:
+    #   - "5432:5432"
+    
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - balancebite-network
+
+  # ===========================================================================
+  # REDIS (Cache)
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: balancebite-redis
+    restart: unless-stopped
+    
+    # In produzione NON esporre la porta!
+    # ports:
+    #   - "6379:6379"
+    
+    command: redis-server --appendonly yes
+    
+    volumes:
+      - redis_data:/data
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - balancebite-network
+
+# -----------------------------------------------------------------------------
+# NETWORKS
+# -----------------------------------------------------------------------------
+networks:
+  balancebite-network:
+    driver: bridge
+
+# -----------------------------------------------------------------------------
+# VOLUMES
+# -----------------------------------------------------------------------------
+volumes:
+  postgres_data:
+  redis_data:
