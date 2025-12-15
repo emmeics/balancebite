@@ -1,0 +1,31 @@
+# =============================================================================
+# PHPStan Configuration - BalanceBite
+# =============================================================================
+# Analisi statica del codice per trovare errori senza eseguire.
+# Esegui: vendor/bin/phpstan analyse
+# =============================================================================
+
+parameters:
+    # Livello di analisi (0-9, dove 9 è il più rigoroso)
+    # Partiamo da 6, aumenteremo gradualmente
+    level: 6
+
+    # Directory da analizzare
+    paths:
+        - src
+
+    # Directory da escludere
+    excludePaths:
+        - src/Kernel.php
+        - src/DataFixtures
+
+    # Report errori anche nei file senza namespace
+    reportUnmatchedIgnoredErrors: false
+
+    # Tratta i parametri senza tipo come mixed
+    treatPhpDocTypesAsCertain: false
+
+# Estensioni PHPStan
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon

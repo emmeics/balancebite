@@ -1,0 +1,170 @@
+# =============================================================================
+# GITHUB ACTIONS - CI Pipeline
+# =============================================================================
+# Questo workflow viene eseguito ad ogni push e pull request.
+# Esegue: code style, static analysis, e tests.
+# =============================================================================
+
+name: CI
+
+# Quando eseguire questo workflow
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+# Permessi minimi necessari
+permissions:
+  contents: read
+
+jobs:
+  # ===========================================================================
+  # JOB 1: Code Quality (PHP CS Fixer + PHPStan)
+  # ===========================================================================
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      # Checkout del codice
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup PHP con estensioni necessarie
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, pdo_pgsql, redis
+          coverage: none
+          tools: composer:v2
+
+      # Cache delle dipendenze Composer (velocizza le build successive)
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # Installa dipendenze
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      # Verifica code style con PHP CS Fixer
+      - name: Check code style (PHP CS Fixer)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+
+      # Analisi statica con PHPStan
+      - name: Static analysis (PHPStan)
+        run: vendor/bin/phpstan analyse --no-progress
+
+  # ===========================================================================
+  # JOB 2: Tests
+  # ===========================================================================
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: backend
+
+    # Servizi Docker necessari per i test
+    services:
+      # PostgreSQL per i test di integrazione
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: balancebite
+          POSTGRES_PASSWORD: balancebite
+          POSTGRES_DB: balancebite_test
+        ports:
+          - 5432:5432
+        # Healthcheck: aspetta che PostgreSQL sia pronto
+        options: >-
+          --health-cmd="pg_isready -U balancebite"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      # Redis per i test che usano cache
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, pdo_pgsql, redis
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      # Crea file .env.test.local con configurazione per CI
+      - name: Configure environment
+        run: |
+          echo "DATABASE_URL=postgresql://balancebite:balancebite@127.0.0.1:5432/balancebite_test?serverVersion=16" > .env.test.local
+          echo "REDIS_URL=redis://127.0.0.1:6379" >> .env.test.local
+
+      # Crea database di test e esegue migrazioni
+      - name: Setup database
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+      # Esegue i test con coverage
+      - name: Run tests
+        run: vendor/bin/phpunit --coverage-text
+
+  # ===========================================================================
+  # JOB 3: Security Check
+  # ===========================================================================
+  security:
+    name: Security Check
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+
+      # Verifica vulnerabilità note nelle dipendenze
+      - name: Check for vulnerabilities
+        run: composer audit
