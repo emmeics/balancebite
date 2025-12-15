@@ -11,13 +11,41 @@ parameters:
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/'
+    # Personalization for the DDD structure
+    # ==========================================================================
+    # DOMAIN LAYER (No auto-registration - pure PHP, no services)
+    # ==========================================================================
+    # Le Entity e Value Object non sono servizi, non vanno registrati.
+    # I Repository Interface sono solo interfacce (niente da registrare).
+    # I Domain Service Interface verranno implementati in Infrastructure.
+
+    # ==========================================================================
+    # APPLICATION LAYER
+    # ==========================================================================
+    App\Application\:
+        resource: "../src/Application/"
+
+    # ==========================================================================
+    # INFRASTRUCTURE LAYER
+    # ==========================================================================
+    App\Infrastructure\:
+        resource: "../src/Infrastructure/"
+
+    # ==========================================================================
+    # PRESENTATION LAYER
+    # ==========================================================================
+    App\Presentation\Controller\:
+        resource: "../src/Presentation/Controller/"
+        tags: ["controller.service_arguments"]
+
+    # ==========================================================================
+    # FIXTURES (Development only)
+    # ==========================================================================
+    App\DataFixtures\:
+        resource: "../src/DataFixtures/"
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
