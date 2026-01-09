@@ -9,21 +9,47 @@ use App\Domain\User\ValueObject\ProfileId;
 use App\Domain\User\ValueObject\UserId;
 use App\Domain\User\ValueObject\HealthCondition;
 use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'profiles')]
 final class Profile
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'profile_id', length: 36)]
     private ProfileId $id;
+
+    #[ORM\Column(type: 'user_id', length: 36)]
     private UserId $userId;
+
+    #[ORM\Column(type: 'string')]
     private string $firstName;
+
+    #[ORM\Column(type: 'string')]
     private string $lastName;
+
+    #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $birthDay;
+
+    #[ORM\Column(type: 'string', enumType: Gender::class)]
     private Gender $gender;
+
+    #[ORM\Column(type: 'integer')]
     private int $heightCm;
+
+    #[ORM\Column(type: 'float')]
     private float $weightKg;
+
+    #[ORM\Column(type: 'string', enumType: ActivityLevel::class)]
     private ActivityLevel $activityLevel;
+
+    #[ORM\Column(type: 'string', enumType: DietaryGoal::class)]
     private DietaryGoal $dietaryGoal;
-    /** @var array<HealthCondition> */
+
+    #[ORM\Column(type: 'health_conditions')]
     private array $healthConditions = [];
+
+    #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $updatedAt;
 
     private function __construct(

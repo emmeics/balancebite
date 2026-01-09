@@ -1,6 +1,12 @@
 doctrine:
     dbal:
         url: "%env(resolve:DATABASE_URL)%"
+        types:
+            user_id: App\Infrastructure\Persistence\Doctrine\Type\UserIdType
+            profile_id: App\Infrastructure\Persistence\Doctrine\Type\ProfileIdType
+            email_address: App\Infrastructure\Persistence\Doctrine\Type\EmailType
+            hashed_password: App\Infrastructure\Persistence\Doctrine\Type\HashedPasswordType
+            health_conditions: App\Infrastructure\Persistence\Doctrine\Type\HealthConditionsType
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
@@ -22,7 +28,6 @@ doctrine:
                 alias: App
         controller_resolver:
             auto_mapping: false
-
 when@test:
     doctrine:
         dbal:

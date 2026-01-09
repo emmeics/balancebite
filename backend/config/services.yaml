@@ -56,3 +56,9 @@ services:
 
     App\Domain\User\Service\PasswordHasherInterface:
         alias: App\Infrastructure\Security\SymfonyPasswordHasher
+    
+    App\Domain\User\Repository\UserRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineUserRepository
+
+    App\Domain\User\Repository\ProfileRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineProfileRepository

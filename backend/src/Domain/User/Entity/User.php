@@ -6,17 +6,26 @@ use App\Domain\User\ValueObject\Email;
 use App\Domain\User\ValueObject\HashedPassword;
 use App\Domain\User\ValueObject\UserId;
 use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'users')]
 final class User
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'user_id', length: 36)]
     private UserId $id;
 
+    #[ORM\Column(type: 'email_address', length: 255, unique: true)]
     private Email $email;
 
+    #[ORM\Column(type: 'hashed_password', length: 255)]
     private HashedPassword $password;
 
+    #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $createdAt;
 
+    #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $updatedAt;
 
     private function __construct(
