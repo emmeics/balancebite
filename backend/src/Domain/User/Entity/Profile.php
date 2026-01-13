@@ -45,12 +45,18 @@ final class Profile
     #[ORM\Column(type: 'string', enumType: DietaryGoal::class)]
     private DietaryGoal $dietaryGoal;
 
+    /**
+     * @var array<HealthCondition>
+     */
     #[ORM\Column(type: 'health_conditions')]
     private array $healthConditions = [];
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $updatedAt;
 
+    /**
+     * @param array<HealthCondition> $healthConditions
+     */
     private function __construct(
         ProfileId $profileId,
         UserId $userId,
@@ -129,6 +135,9 @@ final class Profile
         return $this->dietaryGoal;
     }
 
+    /**
+     * @return array<HealthCondition>
+     */
     public function getHealthConditions(): array
     {
         return $this->healthConditions;
@@ -168,6 +177,9 @@ final class Profile
         );
     }
 
+    /**
+     * @param array<HealthCondition> $healthConditions
+     */
     public static function reconstitute(
         ProfileId $profileId,
         UserId $userId,

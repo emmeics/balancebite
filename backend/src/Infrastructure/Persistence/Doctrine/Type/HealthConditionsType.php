@@ -8,6 +8,9 @@ use Doctrine\DBAL\Types\JsonType;
 
 class HealthConditionsType extends JsonType
 {
+    /**
+     * @return array<HealthCondition>|null
+     */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?array
     {
         $values = parent::convertToPHPValue($value, $platform);

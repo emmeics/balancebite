@@ -8,12 +8,13 @@ use App\Domain\User\Service\PasswordHasherInterface;
 final class RegisterUserHandler
 {
     public function __construct(
-        UserRepositoryInterface $userRepository,
-        PasswordHasherInterface $passwordHasher,
+        private UserRepositoryInterface $userRepository,
+        private PasswordHasherInterface $passwordHasher,
     ) {
     }
 
     public function handle(RegisterUserCommand $command)
     {
+        throw new \RuntimeException('Not implemented yet');
     }
 }
