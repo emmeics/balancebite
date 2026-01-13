@@ -39,7 +39,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           extensions: intl, pdo_pgsql, redis
           coverage: none
           tools: composer:v2
@@ -112,7 +112,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           extensions: intl, pdo_pgsql, redis
           coverage: xdebug
           tools: composer:v2
@@ -162,7 +162,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           tools: composer:v2
 
       # Verifica vulnerabilità note nelle dipendenze
