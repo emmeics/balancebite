@@ -12,14 +12,14 @@ class HealthConditionsType extends JsonType
     {
         $values = parent::convertToPHPValue($value, $platform);
 
-        if(!is_array($values)) {
+        if (!is_array($values)) {
             return [];
         }
 
         $healthConditions = [];
-        foreach($values as $value) {
+        foreach ($values as $value) {
             $healthCondition = HealthCondition::from($value);
-            if($healthCondition instanceof HealthCondition) {
+            if ($healthCondition instanceof HealthCondition) {
                 $healthConditions[] = $healthCondition;
             }
         }
@@ -29,16 +29,17 @@ class HealthConditionsType extends JsonType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if(!is_array($value)) {
+        if (!is_array($value)) {
             return null;
         }
 
         $healthConditions = [];
-        foreach($value as $healthCondition) {
-            if($healthCondition instanceof HealthCondition) {
+        foreach ($value as $healthCondition) {
+            if ($healthCondition instanceof HealthCondition) {
                 $healthConditions[] = $healthCondition->value;
             }
         }
+
         return parent::convertToDatabaseValue($healthConditions, $platform);
     }
 

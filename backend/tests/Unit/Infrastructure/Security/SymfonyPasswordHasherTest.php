@@ -24,7 +24,7 @@ class SymfonyPasswordHasherTest extends TestCase
         $this->assertInstanceOf(HashedPassword::class, $result);
         $this->assertSame('hashed_password_value', $result->getValue());
     }
-    
+
     public function testVerifyReturnsTrueForValidPassword(): void
     {
         // Arrange

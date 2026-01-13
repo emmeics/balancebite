@@ -10,7 +10,7 @@ final class HashedPassword
 
     public function __construct(string $value)
     {
-        if(empty($value)) {
+        if (empty($value)) {
             throw InvalidPasswordException::becauseEmpty();
         }
         $this->value = $value;

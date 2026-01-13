@@ -13,7 +13,6 @@ use App\Domain\User\ValueObject\Gender;
 use App\Domain\User\ValueObject\HashedPassword;
 use App\Domain\User\ValueObject\HealthCondition;
 use App\Domain\User\ValueObject\ProfileId;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -49,7 +48,7 @@ class DoctrineProfileRepositoryTest extends KernelTestCase
             $user->getId(),
             'John',
             'Doe',
-            new DateTimeImmutable('now'),
+            new \DateTimeImmutable('now'),
             Gender::from('male'),
             190,
             80.0,
@@ -63,12 +62,12 @@ class DoctrineProfileRepositoryTest extends KernelTestCase
         // Create User
         $user = $this->createTestUser();
         $this->userRepository->save($user);
-        
+
         $profile = $this->createTestProfile($user);
         $this->profileRepository->save($profile);
 
         $found = $this->profileRepository->findById($profile->getProfileId());
-        
+
         $this->assertNotNull($found);
         $this->assertTrue($profile->getProfileId()->equals($found->getProfileId()));
     }
@@ -78,13 +77,13 @@ class DoctrineProfileRepositoryTest extends KernelTestCase
         // Create User
         $user = $this->createTestUser();
         $this->userRepository->save($user);
-        
+
         $profile = $this->createTestProfile($user);
         $this->profileRepository->save($profile);
-        
+
         $healthConditions = [
             HealthCondition::from('ibs'),
-            HealthCondition::from('reflux')
+            HealthCondition::from('reflux'),
         ];
 
         $profile->addHealthCondition($healthConditions[0]);
@@ -104,10 +103,10 @@ class DoctrineProfileRepositoryTest extends KernelTestCase
         // Create User
         $user = $this->createTestUser();
         $this->userRepository->save($user);
-        
+
         $profile = $this->createTestProfile($user);
         $this->profileRepository->save($profile);
-        
+
         $found = $this->profileRepository->findByUserId($profile->getUserId());
 
         $this->assertNotNull($found);
@@ -127,10 +126,10 @@ class DoctrineProfileRepositoryTest extends KernelTestCase
         // Create User
         $user = $this->createTestUser();
         $this->userRepository->save($user);
-        
+
         $profile = $this->createTestProfile($user);
         $this->profileRepository->save($profile);
-        
+
         $found = $this->profileRepository->findByUserId($profile->getUserId());
 
         $this->profileRepository->delete($found);
@@ -143,7 +142,7 @@ class DoctrineProfileRepositoryTest extends KernelTestCase
     protected function tearDown(): void
     {
         $this->entityManager->rollback();
-        
+
         parent::tearDown();
     }
 }

@@ -11,8 +11,9 @@ use Doctrine\ORM\EntityManagerInterface;
 class DoctrineProfileRepository implements ProfileRepositoryInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
-    ) {}
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
 
     public function save(Profile $profile): void
     {

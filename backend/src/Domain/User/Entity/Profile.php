@@ -5,10 +5,9 @@ namespace App\Domain\User\Entity;
 use App\Domain\User\ValueObject\ActivityLevel;
 use App\Domain\User\ValueObject\DietaryGoal;
 use App\Domain\User\ValueObject\Gender;
+use App\Domain\User\ValueObject\HealthCondition;
 use App\Domain\User\ValueObject\ProfileId;
 use App\Domain\User\ValueObject\UserId;
-use App\Domain\User\ValueObject\HealthCondition;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -29,7 +28,7 @@ final class Profile
     private string $lastName;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $birthDay;
+    private \DateTimeImmutable $birthDay;
 
     #[ORM\Column(type: 'string', enumType: Gender::class)]
     private Gender $gender;
@@ -50,23 +49,22 @@ final class Profile
     private array $healthConditions = [];
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $updatedAt;
+    private \DateTimeImmutable $updatedAt;
 
     private function __construct(
         ProfileId $profileId,
         UserId $userId,
         string $firstName,
         string $lastName,
-        DateTimeImmutable $birthDay,
+        \DateTimeImmutable $birthDay,
         Gender $gender,
         int $heightCm,
         float $weightKg,
         ActivityLevel $activityLevel,
         DietaryGoal $dietaryGoal,
         array $healthConditions,
-        DateTimeImmutable $updatedAt
-    )
-    {
+        \DateTimeImmutable $updatedAt,
+    ) {
         $this->id = $profileId;
         $this->userId = $userId;
         $this->firstName = $firstName;
@@ -101,7 +99,7 @@ final class Profile
         return $this->lastName;
     }
 
-    public function getBirthDay(): DateTimeImmutable
+    public function getBirthDay(): \DateTimeImmutable
     {
         return $this->birthDay;
     }
@@ -136,7 +134,7 @@ final class Profile
         return $this->healthConditions;
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -145,14 +143,13 @@ final class Profile
         UserId $userId,
         string $firstName,
         string $lastName,
-        DateTimeImmutable $birthDay,
+        \DateTimeImmutable $birthDay,
         Gender $gender,
         int $heightCm,
         float $weightKg,
         ActivityLevel $activityLevel,
-        DietaryGoal $dietaryGoal
-    ): self
-    {
+        DietaryGoal $dietaryGoal,
+    ): self {
         $profileId = ProfileId::generate();
 
         return new self(
@@ -167,7 +164,7 @@ final class Profile
             $activityLevel,
             $dietaryGoal,
             [],
-            new DateTimeImmutable('now')
+            new \DateTimeImmutable('now')
         );
     }
 
@@ -176,16 +173,15 @@ final class Profile
         UserId $userId,
         string $firstName,
         string $lastName,
-        DateTimeImmutable $birthDay,
+        \DateTimeImmutable $birthDay,
         Gender $gender,
         int $heightCm,
         float $weightKg,
         ActivityLevel $activityLevel,
         DietaryGoal $dietaryGoal,
         array $healthConditions,
-        DateTimeImmutable $updatedAt
-    ): self
-    {
+        \DateTimeImmutable $updatedAt,
+    ): self {
         return new self(
             $profileId,
             $userId,
@@ -204,9 +200,10 @@ final class Profile
 
     public function addHealthCondition(HealthCondition $healthCondition): bool
     {
-        if(!in_array($healthCondition, $this->healthConditions)) {
+        if (!in_array($healthCondition, $this->healthConditions)) {
             $this->healthConditions[] = $healthCondition;
-            $this->updatedAt = new DateTimeImmutable('now');
+            $this->updatedAt = new \DateTimeImmutable('now');
+
             return true;
         }
 
@@ -217,24 +214,23 @@ final class Profile
     {
         if (($key = array_search($healthCondition, $this->healthConditions, true)) !== false) {
             unset($this->healthConditions[$key]);
-            $this->updatedAt = new DateTimeImmutable('now');
+            $this->updatedAt = new \DateTimeImmutable('now');
         }
     }
 
     public function updateBasicInfo(
         ?string $firstName = null,
         ?string $lastName = null,
-        ?DateTimeImmutable $birthDay = null,
+        ?\DateTimeImmutable $birthDay = null,
         ?Gender $gender = null,
         ?int $heightCm = null,
         ?float $weightKg = null,
         ?ActivityLevel $activityLevel = null,
-        ?DietaryGoal $dietaryGoal = null
-    ): void
-    {
+        ?DietaryGoal $dietaryGoal = null,
+    ): void {
         $entityUpdated = false;
-        if(!is_null($firstName) || !is_null($lastName) || !is_null($birthDay) || !is_null($gender) 
-            || !is_null($heightCm) || !is_null($weightKg) || !is_null($activityLevel) || !is_null($dietaryGoal))  {
+        if (!is_null($firstName) || !is_null($lastName) || !is_null($birthDay) || !is_null($gender)
+            || !is_null($heightCm) || !is_null($weightKg) || !is_null($activityLevel) || !is_null($dietaryGoal)) {
             $entityUpdated = true;
         }
 
@@ -247,8 +243,8 @@ final class Profile
         $this->activityLevel = $activityLevel ?? $this->activityLevel;
         $this->dietaryGoal = $dietaryGoal ?? $this->dietaryGoal;
 
-        if($entityUpdated) {
-            $this->updatedAt = new DateTimeImmutable('now');
+        if ($entityUpdated) {
+            $this->updatedAt = new \DateTimeImmutable('now');
         }
     }
 }

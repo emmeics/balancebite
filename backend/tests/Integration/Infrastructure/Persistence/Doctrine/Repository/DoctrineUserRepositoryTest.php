@@ -37,11 +37,11 @@ class DoctrineUserRepositoryTest extends KernelTestCase
     public function testSaveAndFindById(): void
     {
         $user = $this->createTestUser();
-        
+
         $this->repository->save($user);
-        
+
         $found = $this->repository->findById($user->getId());
-        
+
         $this->assertNotNull($found);
         $this->assertTrue($user->getId()->equals($found->getId()));
     }
@@ -51,7 +51,7 @@ class DoctrineUserRepositoryTest extends KernelTestCase
         $email = 'test@example.com';
         $user = $this->createTestUser($email);
         $this->repository->save($user);
-        
+
         $emailObj = new Email($email);
         $found = $this->repository->findByEmail($emailObj);
 
@@ -71,9 +71,9 @@ class DoctrineUserRepositoryTest extends KernelTestCase
     {
         $email = 'test@example.com';
         $user = $this->createTestUser($email);
-        
+
         $this->repository->save($user);
-        
+
         $found = $this->repository->findById($user->getId());
 
         $this->repository->delete($found);
@@ -87,7 +87,7 @@ class DoctrineUserRepositoryTest extends KernelTestCase
     protected function tearDown(): void
     {
         $this->entityManager->rollback();
-        
+
         parent::tearDown();
     }
 }

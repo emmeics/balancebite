@@ -2,8 +2,8 @@
 
 namespace App\Tests\Unit\Domain\User\ValueObject;
 
-use PHPUnit\Framework\TestCase;
 use App\Domain\User\ValueObject\HealthCondition;
+use PHPUnit\Framework\TestCase;
 
 class HealthConditionTest extends TestCase
 {

@@ -2,12 +2,11 @@
 
 namespace App\Tests\Unit\Domain\User\Entity;
 
-use PHPUnit\Framework\TestCase;
 use App\Domain\User\Entity\User;
-use App\Domain\User\ValueObject\HashedPassword;
 use App\Domain\User\ValueObject\Email;
+use App\Domain\User\ValueObject\HashedPassword;
 use App\Domain\User\ValueObject\UserId;
-use DateTimeImmutable;
+use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
@@ -30,8 +29,8 @@ class UserTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $email = new Email('test@mail.com');
         $passwd = new HashedPassword('HashedPassword');
-        $createdAt = new DateTimeImmutable('now');
-        $updatedAt = new DateTimeImmutable('now');
+        $createdAt = new \DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $user = User::reconstitute(
             $userId,
@@ -53,8 +52,8 @@ class UserTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $email = new Email('test@mail.com');
         $passwd = new HashedPassword('HashedPassword');
-        $createdAt = new DateTimeImmutable('now');
-        $updatedAt = new DateTimeImmutable('now');
+        $createdAt = new \DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $user = User::reconstitute(
             $userId,
@@ -65,10 +64,10 @@ class UserTest extends TestCase
         );
 
         $this->assertSame($email->getValue(), $user->getEmail()->getValue());
-        
+
         $originalUpdatedAt = $user->getUpdatedAt();
         $newMail = new Email('newtest@mail.com');
-        
+
         $user->changeEmail($newMail);
 
         $this->assertSame($newMail->getValue(), $user->getEmail()->getValue());

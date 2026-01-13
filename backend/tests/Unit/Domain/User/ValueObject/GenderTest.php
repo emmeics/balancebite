@@ -2,8 +2,8 @@
 
 namespace App\Tests\Unit\Domain\User\ValueObject;
 
-use PHPUnit\Framework\TestCase;
 use App\Domain\User\ValueObject\Gender;
+use PHPUnit\Framework\TestCase;
 
 class GenderTest extends TestCase
 {

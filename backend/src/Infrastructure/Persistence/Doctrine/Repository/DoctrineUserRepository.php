@@ -11,8 +11,9 @@ use Doctrine\ORM\EntityManagerInterface;
 class DoctrineUserRepository implements UserRepositoryInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
-    ) {}
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
 
     public function save(User $user): void
     {

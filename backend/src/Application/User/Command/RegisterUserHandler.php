@@ -9,11 +9,11 @@ final class RegisterUserHandler
 {
     public function __construct(
         UserRepositoryInterface $userRepository,
-        PasswordHasherInterface $passwordHasher
-    ) {}
+        PasswordHasherInterface $passwordHasher,
+    ) {
+    }
 
     public function handle(RegisterUserCommand $command)
     {
-        
     }
 }

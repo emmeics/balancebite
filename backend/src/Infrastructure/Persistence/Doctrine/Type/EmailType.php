@@ -10,7 +10,7 @@ class EmailType extends StringType
 {
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Email
     {
-        if(empty($value)) {
+        if (empty($value)) {
             return null;
         }
 
@@ -19,7 +19,7 @@ class EmailType extends StringType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if($value instanceof Email) {
+        if ($value instanceof Email) {
             return $value->getValue();
         }
 

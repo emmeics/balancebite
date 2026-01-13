@@ -5,7 +5,6 @@ namespace App\Domain\User\Entity;
 use App\Domain\User\ValueObject\Email;
 use App\Domain\User\ValueObject\HashedPassword;
 use App\Domain\User\ValueObject\UserId;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -23,17 +22,17 @@ final class User
     private HashedPassword $password;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $updatedAt;
+    private \DateTimeImmutable $updatedAt;
 
     private function __construct(
         UserId $id,
         Email $email,
         HashedPassword $password,
-        DateTimeImmutable $createdAt,
-        DateTimeImmutable $updatedAt
+        \DateTimeImmutable $createdAt,
+        \DateTimeImmutable $updatedAt,
     ) {
         $this->id = $id;
         $this->email = $email;
@@ -57,12 +56,12 @@ final class User
         return $this->password;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -73,8 +72,8 @@ final class User
             UserId::generate(),
             $email,
             $passwd,
-            new DateTimeImmutable(),
-            new DateTimeImmutable()
+            new \DateTimeImmutable(),
+            new \DateTimeImmutable()
         );
     }
 
@@ -82,8 +81,8 @@ final class User
         UserId $id,
         Email $email,
         HashedPassword $passwd,
-        DateTimeImmutable $createdAt,
-        DateTimeImmutable $updatedAt
+        \DateTimeImmutable $createdAt,
+        \DateTimeImmutable $updatedAt,
     ): self {
         return new self(
             $id,
@@ -97,12 +96,12 @@ final class User
     public function changeEmail(Email $email): void
     {
         $this->email = $email;
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function changePassword(HashedPassword $password): void
     {
         $this->password = $password;
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Domain\User\ValueObject;
 
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\Exception\InvalidArgumentException;
+use Symfony\Component\Uid\Uuid;
 
 final class UserId
 {
@@ -11,13 +11,13 @@ final class UserId
 
     /**
      * @throws InvalidArgumentException When UUID format is invalid
-    */
+     */
     public function __construct(string $value)
     {
-        if(!UUid::isValid($value)) {
+        if (!Uuid::isValid($value)) {
             throw new InvalidArgumentException('Invalid UUid:'.$value);
         }
-        $this->value = UUid::fromString($value);
+        $this->value = Uuid::fromString($value);
     }
 
     public function getValue(): string
@@ -29,7 +29,7 @@ final class UserId
     {
         return new self(Uuid::v6()->toString());
     }
-    
+
     public function equals(self $other): bool
     {
         return $this->value->toString() === $other->getValue();

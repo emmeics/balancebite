@@ -21,7 +21,7 @@ class RegisterUserHandlerTest extends TestCase
     {
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->passwordHasher = $this->createMock(PasswordHasherInterface::class);
-        
+
         $this->handler = new RegisterUserHandler(
             $this->userRepository,
             $this->passwordHasher

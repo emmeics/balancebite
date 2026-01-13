@@ -2,14 +2,13 @@
 
 namespace App\Tests\Unit\Domain\User\Entity;
 
+use App\Domain\User\Entity\Profile;
 use App\Domain\User\ValueObject\ActivityLevel;
 use App\Domain\User\ValueObject\DietaryGoal;
 use App\Domain\User\ValueObject\Gender;
-use App\Domain\User\ValueObject\UserId;
-use App\Domain\User\Entity\Profile;
 use App\Domain\User\ValueObject\HealthCondition;
 use App\Domain\User\ValueObject\ProfileId;
-use DateTimeImmutable;
+use App\Domain\User\ValueObject\UserId;
 use PHPUnit\Framework\TestCase;
 
 class ProfileTest extends TestCase
@@ -19,7 +18,7 @@ class ProfileTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $firstName = 'Mario';
         $lastName = 'Rossi';
-        $birthDay = new DateTimeImmutable('now');
+        $birthDay = new \DateTimeImmutable('now');
         $heightCm = 180;
         $weightKg = 80.0;
 
@@ -52,11 +51,11 @@ class ProfileTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $firstName = 'Mario';
         $lastName = 'Rossi';
-        $birthDay = new DateTimeImmutable('now');
+        $birthDay = new \DateTimeImmutable('now');
         $heightCm = 180;
         $weightKg = 80.0;
         $healthConditions = [HealthCondition::from('ibs'), HealthCondition::from('reflux')];
-        $updatedAt = new DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $profile = Profile::reconstitute(
             $profileId,
@@ -95,11 +94,11 @@ class ProfileTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $firstName = 'Mario';
         $lastName = 'Rossi';
-        $birthDay = new DateTimeImmutable('now');
+        $birthDay = new \DateTimeImmutable('now');
         $heightCm = 180;
         $weightKg = 80.0;
         $healthConditions = [HealthCondition::from('reflux')];
-        $updatedAt = new DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $profile = Profile::reconstitute(
             $profileId,
@@ -131,11 +130,11 @@ class ProfileTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $firstName = 'Mario';
         $lastName = 'Rossi';
-        $birthDay = new DateTimeImmutable('now');
+        $birthDay = new \DateTimeImmutable('now');
         $heightCm = 180;
         $weightKg = 80.0;
         $healthConditions = [HealthCondition::from('ibs'), HealthCondition::from('reflux')];
-        $updatedAt = new DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $profile = Profile::reconstitute(
             $profileId,
@@ -165,11 +164,11 @@ class ProfileTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $firstName = 'Mario';
         $lastName = 'Rossi';
-        $birthDay = new DateTimeImmutable('now');
+        $birthDay = new \DateTimeImmutable('now');
         $heightCm = 180;
         $weightKg = 80.0;
         $healthConditions = [HealthCondition::from('ibs'), HealthCondition::from('reflux')];
-        $updatedAt = new DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $profile = Profile::reconstitute(
             $profileId,
@@ -187,7 +186,7 @@ class ProfileTest extends TestCase
         );
 
         $originalUpdatedAt = $profile->getUpdatedAt();
-        $newBirthDay = new DateTimeImmutable('now');
+        $newBirthDay = new \DateTimeImmutable('now');
 
         $profile->updateBasicInfo(
             'Luigi',
@@ -208,7 +207,7 @@ class ProfileTest extends TestCase
         $this->assertSame(90.0, $profile->getWeight());
         $this->assertSame(ActivityLevel::ACTIVE->value, $profile->getActivityLevel()->value);
         $this->assertSame(DietaryGoal::WEIGHT_LOSS->value, $profile->getDietaryGoal()->value);
-        
+
         $this->assertNotSame($originalUpdatedAt, $profile->getUpdatedAt());
     }
 
@@ -218,11 +217,11 @@ class ProfileTest extends TestCase
         $userId = new UserId('550e8400-e29b-41d4-a716-446655440000');
         $firstName = 'Mario';
         $lastName = 'Rossi';
-        $birthDay = new DateTimeImmutable('now');
+        $birthDay = new \DateTimeImmutable('now');
         $heightCm = 180;
         $weightKg = 80.0;
         $healthConditions = [HealthCondition::from('ibs'), HealthCondition::from('reflux')];
-        $updatedAt = new DateTimeImmutable('now');
+        $updatedAt = new \DateTimeImmutable('now');
 
         $profile = Profile::reconstitute(
             $profileId,
@@ -240,7 +239,7 @@ class ProfileTest extends TestCase
         );
 
         $originalUpdatedAt = $profile->getUpdatedAt();
-        $newBirthDay = new DateTimeImmutable('now');
+        $newBirthDay = new \DateTimeImmutable('now');
 
         $profile->updateBasicInfo(
             null,
@@ -261,7 +260,7 @@ class ProfileTest extends TestCase
         $this->assertSame(70.0, $profile->getWeight());
         $this->assertSame(ActivityLevel::ACTIVE->value, $profile->getActivityLevel()->value);
         $this->assertSame(DietaryGoal::WEIGHT_LOSS->value, $profile->getDietaryGoal()->value);
-        
+
         $this->assertNotSame($originalUpdatedAt, $profile->getUpdatedAt());
     }
 }

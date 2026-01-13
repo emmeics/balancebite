@@ -2,12 +2,10 @@
 
 namespace App\Domain\User\Exception;
 
-use InvalidArgumentException;
-
-final class InvalidEmailException extends InvalidArgumentException
+final class InvalidEmailException extends \InvalidArgumentException
 {
     public static function withEmail(string $email): self
     {
-        return new self(sprintf('The email "%s" is not valid.', $email));    
+        return new self(sprintf('The email "%s" is not valid.', $email));
     }
 }

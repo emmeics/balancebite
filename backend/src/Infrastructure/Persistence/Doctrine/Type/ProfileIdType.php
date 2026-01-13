@@ -10,7 +10,7 @@ class ProfileIdType extends StringType
 {
     public function convertToPHPValue($value, AbstractPlatform $platform): ?ProfileId
     {
-        if(empty($value)) {
+        if (empty($value)) {
             return null;
         }
 
@@ -19,7 +19,7 @@ class ProfileIdType extends StringType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if($value instanceof ProfileId) {
+        if ($value instanceof ProfileId) {
             return $value->getValue();
         }
 

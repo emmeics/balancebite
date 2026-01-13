@@ -3,7 +3,6 @@
 namespace App\Tests\Unit\Domain\User\ValueObject;
 
 use App\Domain\User\ValueObject\UserId;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class UserIdTest extends TestCase
@@ -24,7 +23,7 @@ class UserIdTest extends TestCase
     {
         $invalidUUid = 'invalid-uuid';
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $userId = new UserId($invalidUUid);
     }
