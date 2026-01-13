@@ -52,6 +52,10 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
+      
+      # Create Env File
+      - name: Create .env file
+        run: cp .env.sample .env
 
       # Installa dipendenze
       - name: Install dependencies
@@ -125,6 +129,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
+      # Create Env File
+      - name: Create .env file
+        run: cp .env.sample .env
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
@@ -165,6 +173,10 @@ jobs:
           php-version: '8.4'
           tools: composer:v2
 
+      # Create Env File
+      - name: Create .env file
+        run: cp .env.sample .env
+      
       # Verifica vulnerabilità note nelle dipendenze
       - name: Check for vulnerabilities
         run: composer audit
