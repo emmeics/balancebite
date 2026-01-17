@@ -18,4 +18,8 @@ app_controllers:
         path: ../src/Presentation/Controller/
         namespace: App\Presentation\Controller
     type: attribute
-    prefix: "%env(default:api_prefix:API_PREFIX)%"
+
+# Login Route
+api_login:
+    path: /api/login
+    methods: [POST]

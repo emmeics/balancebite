@@ -33,7 +33,7 @@ final class RegisterUserHandler
         $email = new Email($command->email);
 
         // 4. Check email not already registered
-        if ($this->userRepository->findByEmail($email) !== null) {
+        if (null !== $this->userRepository->findByEmail($email)) {
             throw new \DomainException('Email already registered');
         }
 
