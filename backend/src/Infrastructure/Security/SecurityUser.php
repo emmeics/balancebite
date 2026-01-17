@@ -28,7 +28,7 @@ final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInte
         return ['ROLE_USER'];
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->user->getPassword()->getValue();
     }
