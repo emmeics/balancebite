@@ -14,6 +14,9 @@ class ApiTestController extends AbstractController
     ) {
     }
 
+    /**
+     * Route for test the identity of logged user.
+     */
     #[Route('/api/me', 'api_me', methods: ['GET'])]
     public function main(): Response
     {
