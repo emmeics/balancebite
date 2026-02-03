@@ -55,10 +55,6 @@ class AuthController extends AbstractController
             );
 
             $userId = $this->registerUserHandler->handle($command);
-            if (isset($userId)) {
-                throw new \Exception('Something goes wrong');
-            }
-
             $response['userId'] = $userId->getValue();
         } catch (InvalidEmailException|InvalidPasswordException $e) {
             $statusCode = 400;
