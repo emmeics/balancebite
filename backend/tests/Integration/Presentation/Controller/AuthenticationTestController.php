@@ -10,13 +10,19 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * Integration tests for JWT Authentication flow.
+ * Integration tests for JWT Authentication and Registration flow.
  *
  * Tests the complete authentication cycle:
  * - User login with valid/invalid credentials
  * - Access to protected routes with valid/invalid tokens
+ * Tests registration process:
+ * - User with all valid fields
+ * - User with invalid email
+ * - User with invalid password
+ * - User with mismatch password
+ * - User with an existant email
  *
- * Endpoints tested: POST /api/login, GET /api/me
+ * Endpoints tested: POST /api/login, GET /api/me, POST /api/register
  */
 class AuthenticationTestController extends WebTestCase
 {
@@ -24,7 +30,10 @@ class AuthenticationTestController extends WebTestCase
     private UserRepositoryInterface $userRepository;
     private PasswordHasherInterface $passwordHasher;
     private string $testEmail = 'logintest@example.com';
+    private string $testRegistrationEmail = 'testnewuser2@email.com';
     private string $testPassword = 'password123';
+    private string $apiLoginEndpoint = '/api/login';
+    private string $apiRegisterEndpoint = '/api/register';
     private User $testUser;
 
     /**
@@ -88,7 +97,7 @@ class AuthenticationTestController extends WebTestCase
     {
         $this->httpClient->request(
             'POST',
-            '/api/login',
+            $this->apiLoginEndpoint,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -112,7 +121,7 @@ class AuthenticationTestController extends WebTestCase
     {
         $this->httpClient->request(
             'POST',
-            '/api/login',
+            $this->apiLoginEndpoint,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -136,7 +145,7 @@ class AuthenticationTestController extends WebTestCase
         // Arrange: Login to get a valid token
         $this->httpClient->request(
             'POST',
-            '/api/login',
+            $this->apiLoginEndpoint,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -186,13 +195,134 @@ class AuthenticationTestController extends WebTestCase
     }
 
     /**
+     * Test successful register with valid fields.
+     *
+     * Expects:
+     * - HTTP 201 status code
+     */
+    public function testRegisterUserWithValidData(): void
+    {
+        $this->httpClient->request(
+            'POST',
+            $this->apiRegisterEndpoint,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => $this->testRegistrationEmail, 'password' => $this->testPassword, 'password_confirmation' => $this->testPassword])
+        );
+
+        $response = $this->httpClient->getResponse();
+        $content = json_decode($response->getContent(), true);
+
+        $this->assertEquals(201, $response->getStatusCode(), 'Register should return HTTP 201 on valid fields');
+        $this->assertArrayHasKey('userId', $content, 'Get User Id after successful registration');
+    }
+
+    /**
+     * Test bad registration user with invalid email.
+     *
+     * Expects:
+     * - HTTP 400 status code
+     */
+    public function testRegisterUserWithInvalidEmail(): void
+    {
+        $this->httpClient->request(
+            'POST',
+            $this->apiRegisterEndpoint,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => 'wrong_email', 'password' => $this->testPassword, 'password_confirmation' => $this->testPassword])
+        );
+
+        $response = $this->httpClient->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode(), 'Register should return HTTP 400 on invalid email');
+    }
+
+    /**
+     * Test bad registration user with invalid password.
+     *
+     * Expects:
+     * - HTTP 400 status code
+     */
+    public function testRegisterUserWithInvalidPassword(): void
+    {
+        $this->httpClient->request(
+            'POST',
+            $this->apiRegisterEndpoint,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => $this->testRegistrationEmail, 'password' => '1234567', 'password_confirmation' => '1234567'])
+        );
+
+        $response = $this->httpClient->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode(), 'Register should return HTTP 400 on invalid password');
+    }
+
+    /**
+     * Test bad registration user with mismatching password.
+     *
+     * Expects:
+     * - HTTP 400 status code
+     */
+    public function testRegisterUserWithPasswordMismatch(): void
+    {
+        $this->httpClient->request(
+            'POST',
+            $this->apiRegisterEndpoint,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => $this->testRegistrationEmail, 'password' => $this->testPassword, 'password_confirmation' => 'wrong_password'])
+        );
+
+        $response = $this->httpClient->getResponse();
+
+        $this->assertEquals(400, $response->getStatusCode(), 'Register should return HTTP 400 on invalid password mismatch');
+    }
+
+    /**
+     * Test bad registration user with an existing email.
+     *
+     * Expects:
+     * - HTTP 409 status code
+     */
+    public function testRegisterUserWithExistingEmail(): void
+    {
+        $this->httpClient->request(
+            'POST',
+            $this->apiRegisterEndpoint,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => $this->testEmail, 'password' => $this->testPassword, 'password_confirmation' => $this->testPassword])
+        );
+
+        $response = $this->httpClient->getResponse();
+
+        $this->assertEquals(409, $response->getStatusCode(), 'Register should return HTTP 409 on invalid existing email');
+    }
+
+    /**
      * Tear Down test environment after all tests.
      *
      * Remove test user from the Database.
      */
     protected function tearDown(): void
     {
-        $this->userRepository->delete($this->testUser);
+        // Remove test user created in setUp
+        if (isset($this->testUser)) {
+            $this->userRepository->delete($this->testUser);
+        }
+
+        // Remove registered User used for the test
+        $registeredUser = $this->userRepository->findByEmail(new Email($this->testRegistrationEmail));
+        if ($registeredUser) {
+            $this->userRepository->delete($registeredUser);
+        }
 
         parent::tearDown();
     }
