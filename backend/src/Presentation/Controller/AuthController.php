@@ -55,7 +55,7 @@ class AuthController extends AbstractController
             );
 
             $userId = $this->registerUserHandler->handle($command);
-            if (empty($userId)) {
+            if (isset($userId)) {
                 throw new \Exception('Something goes wrong');
             }
 
