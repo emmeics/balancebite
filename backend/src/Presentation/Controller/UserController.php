@@ -64,18 +64,18 @@ class UserController extends AbstractController
             $profile = $this->profileRepository->findByUserId($user->getId());
             $response = [
                 'data' => [
-                    'id' => $user->getId()->getValue() ?? '',
-                    'email' => $user->getEmail()->getValue() ?? '',
+                    'id' => $user->getId()->getValue(),
+                    'email' => $user->getEmail()->getValue(),
                     'profile' => $profile ? [
-                        'first_name' => $profile->getFirstName() ?? '',
-                        'last_name' => $profile->getLastName() ?? '',
+                        'first_name' => $profile->getFirstName(),
+                        'last_name' => $profile->getLastName(),
                         'birth_date' => $profile->getBirthDay()->format('Y-m-d') ?? '',
                         'gender' => $profile->getGender()->value ?? '',
-                        'height_cm' => $profile->getHeight() ?? 0,
-                        'weight_kg' => $profile->getWeight() ?? 0,
+                        'height_cm' => (int)$profile->getHeight(),
+                        'weight_kg' => (float)$profile->getWeight(),
                         'activity_level' => $profile->getActivityLevel()->value ?? '',
                         'dietary_goal' => $profile->getDietaryGoal()->value ?? '',
-                        'health_conditions' => array_map(fn ($condition) => $condition->value, $profile->getHealthConditions()) ?? [],
+                        'health_conditions' => array_map(fn ($condition) => $condition->value, $profile->getHealthConditions()),
                     ] : null,
                     'created_at' => $user->getCreatedAt()->format('c') ?? '',
                 ],
@@ -137,12 +137,12 @@ class UserController extends AbstractController
             $profile = $this->updateProfileHandler->handle($command);
             $response['data']['profile'] = [
                 'profile_id' => $profile->getProfileId()->getValue(),
-                'first_name' => $profile->getFirstName() ?? '',
-                'last_name' => $profile->getLastName() ?? '',
+                'first_name' => $profile->getFirstName(),
+                'last_name' => $profile->getLastName(),
                 'birth_date' => $profile->getBirthDay()->format('Y-m-d') ?? '',
                 'gender' => $profile->getGender()->value ?? '',
-                'height_cm' => $profile->getHeight() ?? 0,
-                'weight_kg' => $profile->getWeight() ?? 0.0,
+                'height_cm' => (int)$profile->getHeight(),
+                'weight_kg' => (float)$profile->getWeight(),
                 'activity_level' => $profile->getActivityLevel()->value ?? '',
                 'dietary_goal' => $profile->getDietaryGoal()->value ?? '',
                 'health_conditions' => array_map(

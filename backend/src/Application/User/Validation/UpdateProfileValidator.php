@@ -60,21 +60,21 @@ class UpdateProfileValidator
             $errors['weight_kg'] = 'Weight Kg is required';
         }
 
-        if ($isNewProfile || !empty($fields->activityLevel)) {
+        if ($isNewProfile || !empty($command->activityLevel)) {
             if (null === ActivityLevel::tryFrom($command->activityLevel)) {
                 $errors['activity_level'] = 'Activity Level is invalid';
             }
         }
 
-        if ($isNewProfile || !empty($fields->dietaryGoal)) {
+        if ($isNewProfile || !empty($command->dietaryGoal)) {
             if (null === DietaryGoal::tryFrom($command->dietaryGoal)) {
                 $errors['dietary_goal'] = 'Dietary Goal is invalid';
             }
         }
 
-        if (!empty($fields->healthConditions)) {
+        if (!empty($command->healthConditions)) {
             $healthConditions = [];
-            foreach ($fields->healthConditions as $condition) {
+            foreach ($command->healthConditions as $condition) {
                 if (null === HealthCondition::tryFrom($condition)) {
                     $healthConditions[] = $condition;
                 }
