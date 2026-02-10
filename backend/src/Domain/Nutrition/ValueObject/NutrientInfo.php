@@ -20,7 +20,7 @@ final readonly class NutrientInfo
         private float $carbsGrams,
         private float $fatGrams,
         private float $fiberGrams,
-        private float $sodiumMilligrams
+        private float $sodiumMilligrams,
     ) {
         if ($this->calories < 0 || $this->proteinGrams < 0 || $this->carbsGrams < 0 || $this->fatGrams < 0 || $this->fiberGrams < 0 || $this->sodiumMilligrams < 0) {
             throw new InvalidNutrientInfoException('Nutrient values cannot be negative');
