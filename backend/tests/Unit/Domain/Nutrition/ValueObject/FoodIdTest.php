@@ -73,7 +73,7 @@ final class FoodIdTest extends TestCase
     }
 
     /**
-     * Test verify that two object with the same Id are equals
+     * Test verify that two object with the same Id are equals.
      *
      * Expects:
      * - Except true by the result of the method "equals"
@@ -89,7 +89,7 @@ final class FoodIdTest extends TestCase
     }
 
     /**
-     * Test verify that two object with a different Id are not equals
+     * Test verify that two object with a different Id are not equals.
      *
      * Expects:
      * - Except false by the result of the method "equals"
