@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Tests\Integration\Infrastructure\ExternalService\OpenFoodFacts;
+
 use App\Domain\Nutrition\Entity\Food;
 use App\Domain\Nutrition\Exception\InvalidFoodDataException;
 use App\Domain\Nutrition\ValueObject\FoodSource;
