@@ -47,7 +47,7 @@ class OpenFoodFactsClientTest extends WebTestCase
 
         $results = $this->openFoodFactsClient->search($query_string);
 
-        if ($results) {
+        if (empty($results)) {
             $this->markTestSkipped('OpenFoodFacts API returned empty response.');
         }
 
