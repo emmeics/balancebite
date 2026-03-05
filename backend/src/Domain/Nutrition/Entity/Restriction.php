@@ -129,17 +129,11 @@ final class Restriction
         return $this->ingredientsToCheck;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return \DateTimeImmutable
-     */
     public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
