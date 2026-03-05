@@ -69,6 +69,10 @@ class OpenFoodFactsFoodFactoryTest extends KernelTestCase
         $search = 'nutella';
         $data = $this->openFoodFactsClient->search($search, 1);
 
+        if (empty($data['products'][0])) {
+            $this->markTestSkipped('OpenFoodFacts API returned empty response.');
+        }
+
         $foodEntity = $this->openFoodFactsFactory->createFromArray($data['products'][0]);
 
         $this->assertInstanceOf(Food::class, $foodEntity, 'Should return a Food Entity.');
